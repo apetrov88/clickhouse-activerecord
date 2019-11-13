@@ -26,7 +26,7 @@ module ActiveRecord
           raise ArgumentError, 'No database specified. Missing argument: database.'
         end
 
-        ConnectionAdapters::ClickhouseAdapter.new(logger, [host, port, ssl], { user: config[:username], password: config[:password], database: database }.compact, config[:debug])
+        ConnectionAdapters::ClickhouseAdapter.new(logger, [host, port, ssl], { user: config[:username], password: config[:password], read_timeout: config[:read_timeout] || 30, database: database }.compact, config[:debug])
       end
     end
   end
@@ -218,7 +218,7 @@ module ActiveRecord
       private
 
       def connect
-        @connection = Net::HTTP.start(@connection_parameters[0], @connection_parameters[1], use_ssl: @connection_parameters[2], verify_mode: OpenSSL::SSL::VERIFY_NONE)
+        @connection = Net::HTTP.start(@connection_parameters[0], @connection_parameters[1], use_ssl: @connection_parameters[2],  read_timeout: @config[:read_timeout], verify_mode: OpenSSL::SSL::VERIFY_NONE)
       end
     end
   end
